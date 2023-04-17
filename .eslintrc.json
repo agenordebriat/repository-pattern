@@ -1,0 +1,8 @@
+{
+  "extends": ["@antfu"],
+  "rules": {
+    "@typescript-eslint/quotes": ["error", "double"],
+    "unused-imports/no-unused-vars": ["error", { "ignoreRestSiblings": true }],
+    "yml/quotes": ["error", { "prefer": "double" }]
+  }
+}
