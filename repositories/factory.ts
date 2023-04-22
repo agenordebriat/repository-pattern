@@ -54,6 +54,6 @@ export default class RepositoriesFactory {
       })
     }
 
-    return { data: parseData(data, schema), ...rest }
+    return { data: data.value ? parseData(data, schema) : data, ...rest }
   }
 }
