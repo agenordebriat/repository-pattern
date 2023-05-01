@@ -3,14 +3,21 @@ import type { ZodSchema, z } from "zod"
 export interface Options {
   fetchOptions?: Parameters<typeof $fetch>[1]
   asyncDataOptions?: Parameters<typeof useAsyncData>[2]
-  errorInfo?: {
+  errorOptions?: {
     statusCode?: number
     statusMessage?: string
     message?: string
+    fatal?: boolean
   }
 }
 
-function parseData<T extends ZodSchema>(data: Ref<unknown>, schema: T) {
+function parseData<T extends ZodSchema>(
+  data: Ref<unknown>,
+  schema: T,
+): Ref<z.infer<T> | null> {
+  if (!data.value)
+    return data
+
   const result = schema.safeParse(data.value)
 
   if (!result.success) {
@@ -22,7 +29,7 @@ function parseData<T extends ZodSchema>(data: Ref<unknown>, schema: T) {
     })
   }
 
-  return ref<z.infer<T>>(result.data)
+  return ref(result.data)
 }
 
 export default class RepositoriesFactory {
@@ -35,7 +42,7 @@ export default class RepositoriesFactory {
   async fetch<T extends ZodSchema>(
     request: string,
     schema: T,
-    { fetchOptions, asyncDataOptions, errorInfo = {} }: Options = {},
+    { fetchOptions, asyncDataOptions, errorOptions = {} }: Options = {},
   ) {
     const { data, error, ...rest } = await useAsyncData(
       () => this.$fetch(request, fetchOptions),
@@ -43,17 +50,17 @@ export default class RepositoriesFactory {
     )
 
     if (error.value) {
-      const { statusCode, statusMessage, message } = errorInfo
-      const errorData: typeof errorInfo = error.value
+      const { statusCode, statusMessage, message, fatal } = errorOptions
+      const errorData: typeof errorOptions = error.value
 
       throw createError({
-        statusCode: statusCode || errorData.statusCode,
-        statusMessage: statusMessage || errorData.statusMessage,
-        message: message || errorData.message,
-        fatal: true,
+        statusCode: statusCode ?? errorData.statusCode,
+        statusMessage: statusMessage ?? errorData.statusMessage,
+        message: message ?? errorData.message,
+        fatal: fatal ?? false,
       })
     }
 
-    return { data: data.value ? parseData(data, schema) : data, ...rest }
+    return { data: parseData(data, schema), ...rest }
   }
 }
