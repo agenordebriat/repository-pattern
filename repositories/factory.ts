@@ -44,7 +44,7 @@ export default class RepositoriesFactory {
     schema: T,
     { fetchOptions, asyncDataOptions, errorOptions = {} }: Options = {},
   ) {
-    const { data, error, ...rest } = await useAsyncData(
+    const { data, pending, error, ...rest } = await useAsyncData(
       () => this.$fetch(request, fetchOptions),
       asyncDataOptions,
     )
@@ -61,6 +61,9 @@ export default class RepositoriesFactory {
       })
     }
 
-    return { data: parseData(data, schema), ...rest }
+    if (asyncDataOptions?.immediate === false)
+      pending.value = false
+
+    return { data: parseData(data, schema), pending, ...rest, error }
   }
 }

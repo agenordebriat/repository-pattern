@@ -1,10 +1,11 @@
 <script setup lang="ts">
-const { data: users, execute } = await useRepository("user").getAll({
+const { data: users, execute, pending } = await useRepository("user").getAll({
   asyncDataOptions: { immediate: false },
 })
 </script>
 
 <template>
+  <pre>{{ pending }}</pre>
   <ul>
     <button @click="execute()">
       Get all users
