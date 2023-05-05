@@ -15,8 +15,7 @@ function parseData<T extends ZodSchema>(
   data: Ref<unknown>,
   schema: T,
 ): Ref<z.infer<T> | null> {
-  if (!data.value)
-    return data
+  if (!data.value) return data
 
   const result = schema.safeParse(data.value)
 
@@ -57,12 +56,11 @@ export default class RepositoriesFactory {
         statusCode: statusCode ?? errorData.statusCode,
         statusMessage: statusMessage ?? errorData.statusMessage,
         message: message ?? errorData.message,
-        fatal: fatal ?? false,
+        fatal: fatal ?? true,
       })
     }
 
-    if (asyncDataOptions?.immediate === false)
-      pending.value = false
+    if (asyncDataOptions?.immediate === false) pending.value = false
 
     return { data: parseData(data, schema), pending, ...rest, error }
   }

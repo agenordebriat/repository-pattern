@@ -1,5 +1,9 @@
 <script setup lang="ts">
-const { data: users, execute, pending } = await useRepository("user").getAll({
+const {
+  data: users,
+  execute,
+  pending,
+} = await useRepository("user").getAll({
   asyncDataOptions: { immediate: false },
 })
 </script>
