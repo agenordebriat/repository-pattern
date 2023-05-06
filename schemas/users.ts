@@ -5,6 +5,7 @@ export default {
     z.object({
       id: z.string(),
       name: z.string(),
+      city: z.string(),
     }),
   ),
   names: z.array(z.string()),

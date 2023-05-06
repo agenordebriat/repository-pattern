@@ -14,12 +14,12 @@ export interface Options {
 export default class RepositoriesFactory {
   private $fetch: typeof $fetch
 
-  constructor(fetchInstance: typeof $fetch) {
+  constructor(fetchInstance: typeof $fetch = $fetch) {
     this.$fetch = fetchInstance
   }
 
   async fetch<T extends ZodSchema>(
-    request: string,
+    request: Parameters<typeof $fetch>[0],
     schema: T,
     { fetchOptions, asyncDataOptions, errorOptions = {} }: Options = {},
   ) {

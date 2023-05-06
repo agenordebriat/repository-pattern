@@ -6,7 +6,7 @@ const {
 } = await useRepository("users").all({
   asyncDataOptions: { immediate: false },
 })
-delayedParse(users, "users", "all", pending)
+delayedParse(users, "users", "All", pending)
 </script>
 
 <template>
