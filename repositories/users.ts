@@ -9,6 +9,10 @@ type Users = {
 }[]
 
 export default class UsersRepository extends RepositoriesFactory {
+  all(options?: Options) {
+    return this.fetch("/users", schemas.users.all, options)
+  }
+
   names(options?: Options) {
     const { asyncDataOptions, ...rest } = options || {}
 

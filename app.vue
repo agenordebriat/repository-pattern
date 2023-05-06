@@ -3,10 +3,10 @@ const {
   data: users,
   execute,
   pending,
-} = await useRepository("users").names({
+} = await useRepository("users").all({
   asyncDataOptions: { immediate: false },
 })
-delayedParse(users, "users", "names", pending)
+delayedParse(users, "users", "all", pending)
 </script>
 
 <template>
