@@ -1,5 +1,5 @@
 import RepositoriesFactory from "~/repositories/factory"
-import schemas from "~/schemas"
+import users from "~/schemas/users"
 import type { Options } from "~/repositories/factory"
 
 type Users = {
@@ -8,15 +8,17 @@ type Users = {
   city: string
 }[]
 
+const { all, names } = users
+
 export default class UsersRepository extends RepositoriesFactory {
   all(options?: Options) {
-    return this.fetch("/users", schemas.users.all, options)
+    return this.fetch("/users", all, options)
   }
 
   names(options?: Options) {
     const { asyncDataOptions, ...rest } = options || {}
 
-    return this.fetch("/users", schemas.users.names, {
+    return this.fetch("/users", names, {
       ...rest,
       asyncDataOptions: {
         ...asyncDataOptions,

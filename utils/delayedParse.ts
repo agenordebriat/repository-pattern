@@ -1,22 +1,20 @@
 import schemas from "~/schemas"
 
-type Key = keyof typeof schemas
-type Schema = keyof (typeof schemas)[Key]
-
 type DelayedParseFunction = (
   data: Ref<unknown>,
-  key: Key,
-  schema: Schema,
+  repository: keyof typeof schemas,
+  schema: keyof (typeof schemas)[keyof typeof schemas],
   pending: Ref<boolean>,
 ) => void
 
 export const delayedParse: DelayedParseFunction = (
   data,
-  key,
+  repository,
   schema,
   pending,
 ) => {
   watch(pending, () => {
-    if (!pending.value) data.value = parseData(data, schemas[key][schema]).value
+    if (!pending.value)
+      data.value = parseData(data, schemas[repository][schema]).value
   })
 }
