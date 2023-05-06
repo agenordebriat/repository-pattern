@@ -1,7 +1,7 @@
-import UserRepository from "~/repositories/user"
+import UsersRepository from "~/repositories/users"
 
 interface Repositories {
-  user: UserRepository
+  users: UsersRepository
 }
 
 export function useRepository(repository: keyof Repositories) {
@@ -10,7 +10,7 @@ export function useRepository(repository: keyof Repositories) {
   })
 
   const repositories: Repositories = {
-    user: new UserRepository(fetch),
+    users: new UsersRepository(fetch),
   }
 
   return repositories[repository]

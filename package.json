@@ -9,9 +9,10 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^0.38.4",
-    "eslint": "^8.38.0",
-    "nuxt": "^3.4.1",
+    "@antfu/eslint-config": "^0.38.6",
+    "@nuxt/devtools": "^0.4.5",
+    "eslint": "^8.40.0",
+    "nuxt": "^3.4.3",
     "zod": "^3.21.4"
   }
 }

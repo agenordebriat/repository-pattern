@@ -1,28 +1,14 @@
-import type { ZodSchema, z } from "zod"
+import type { ZodSchema } from "zod"
 
 export interface Options {
   fetchOptions?: Parameters<typeof $fetch>[1]
   asyncDataOptions?: Parameters<typeof useAsyncData>[2]
-  errorInfo?: {
+  errorOptions?: {
     statusCode?: number
     statusMessage?: string
     message?: string
+    fatal?: boolean
   }
-}
-
-function parseData<T extends ZodSchema>(data: Ref<unknown>, schema: T) {
-  const result = schema.safeParse(data.value)
-
-  if (!result.success) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: "La validation des données a échoué",
-      message: result.error.message,
-      fatal: true,
-    })
-  }
-
-  return ref<z.infer<T>>(result.data)
 }
 
 export default class RepositoriesFactory {
@@ -35,25 +21,27 @@ export default class RepositoriesFactory {
   async fetch<T extends ZodSchema>(
     request: string,
     schema: T,
-    { fetchOptions, asyncDataOptions, errorInfo = {} }: Options = {},
+    { fetchOptions, asyncDataOptions, errorOptions = {} }: Options = {},
   ) {
-    const { data, error, ...rest } = await useAsyncData(
+    const { data, pending, error, ...rest } = await useAsyncData(
       () => this.$fetch(request, fetchOptions),
       asyncDataOptions,
     )
 
     if (error.value) {
-      const { statusCode, statusMessage, message } = errorInfo
-      const errorData: typeof errorInfo = error.value
+      const { statusCode, statusMessage, message, fatal } = errorOptions
+      const errorData: typeof errorOptions = error.value
 
       throw createError({
-        statusCode: statusCode || errorData.statusCode,
-        statusMessage: statusMessage || errorData.statusMessage,
-        message: message || errorData.message,
-        fatal: true,
+        statusCode: statusCode ?? errorData.statusCode,
+        statusMessage: statusMessage ?? errorData.statusMessage,
+        message: message ?? errorData.message,
+        fatal: fatal ?? true,
       })
     }
 
-    return { data: data.value ? parseData(data, schema) : data, ...rest }
+    if (asyncDataOptions?.immediate === false) pending.value = false
+
+    return { data: parseData(data, schema), pending, ...rest, error }
   }
 }
