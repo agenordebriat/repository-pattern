@@ -1,18 +1,22 @@
 <script setup lang="ts">
+const { data: users } = await useRepository("users").all()
+
 const {
-  data: users,
+  data: userNames,
   execute,
   pending,
-} = await useRepository("users").all({
+} = await useRepository("users").names({
   asyncDataOptions: { immediate: false },
 })
-delayedParse(users, "users", "All", pending)
+
+delayedParse(userNames, "users", "names", pending)
 </script>
 
 <template>
+  <pre>{{ users }}</pre>
   <pre>{{ pending }}</pre>
   <button @click="execute()">
     Get user names
   </button>
-  <pre>{{ users }}</pre>
+  <pre>{{ userNames }}</pre>
 </template>

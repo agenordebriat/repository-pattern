@@ -13,7 +13,7 @@ export const parseData: ParseDataFunction = (data, schema) => {
   if (!result.success) {
     throw createError({
       statusCode: 500,
-      statusMessage: "La validation des données a échoué",
+      statusMessage: "Échec de la validation de données.",
       message: result.error.message,
       fatal: true,
     })
