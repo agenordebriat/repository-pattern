@@ -4,7 +4,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      API_BASE_URL: "",
+      JSONPLACEHOLDER_BASE_URL: "",
+      MOCKAPI_BASE_URL: "",
     },
   },
 })

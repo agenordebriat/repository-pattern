@@ -1,9 +1,14 @@
+import { defu } from "defu"
+import { hash } from "ohash"
 import type { ZodSchema } from "zod"
 import type { AsyncDataOptions } from "nuxt/app"
+import type { MultiWatchSources } from "nuxt/dist/app/composables/asyncData"
 
-export interface Options<T = void, U = T> {
+export interface Options<T = any, U = T> {
   fetchOptions?: Parameters<typeof $fetch>[1]
-  asyncDataOptions?: AsyncDataOptions<T, U>
+  asyncDataOptions?: Omit<AsyncDataOptions<T, U>, "watch"> & {
+    watch?: MultiWatchSources | false
+  }
   errorOptions?: {
     statusCode?: number
     statusMessage?: string
@@ -21,20 +26,38 @@ export default class RepositoriesFactory {
 
   async fetch<T extends ZodSchema>(
     request: Parameters<typeof $fetch>[0],
-    schema: T,
-    { fetchOptions, asyncDataOptions, errorOptions = {} }: Options | any = {},
+    { fetchOptions, asyncDataOptions = {}, errorOptions = {} }: Options = {},
+    schema: T | false,
   ) {
-    if (!schema.description) {
+    if (schema && !schema.description) {
       throw createError({
         statusMessage: "Schema description is required",
         fatal: true,
       })
     }
 
+    const _fetchOptions = reactive({ ...fetchOptions })
+    const { watch } = asyncDataOptions
+
     const { data, pending, error, ...rest } = await useAsyncData(
-      schema.description,
-      () => this.$fetch(request, fetchOptions),
-      asyncDataOptions,
+      `${
+        schema
+          ? schema.description
+          : `${request} (${hash([
+              request,
+              fetchOptions,
+              asyncDataOptions,
+              errorOptions,
+            ])})`
+      }`,
+      () => this.$fetch(request, { ..._fetchOptions }),
+      defu(
+        {
+          watch:
+            watch === false ? [] : [_fetchOptions, ...(watch || [])],
+        },
+        asyncDataOptions,
+      ),
     )
 
     if (error.value) {
@@ -51,6 +74,11 @@ export default class RepositoriesFactory {
 
     if (asyncDataOptions?.immediate === false) pending.value = false
 
-    return { data: parseData(data, schema), pending, ...rest, error }
+    return {
+      data: schema ? parseData(data, schema) : data,
+      pending,
+      ...rest,
+      error,
+    }
   }
 }
