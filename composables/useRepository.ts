@@ -6,7 +6,11 @@ interface Repositories {
   users: UsersRepository
 }
 
-export function useRepository<T extends keyof Repositories>(repository: T): Repositories[T] {
+type UseRepositoryFunction = <T extends keyof Repositories>(
+  repository: T,
+) => Repositories[T]
+
+export const useRepository: UseRepositoryFunction = (repository) => {
   const jsonplaceholderFetch = $fetch.create({
     baseURL: useRuntimeConfig().public.JSONPLACEHOLDER_BASE_URL,
   })

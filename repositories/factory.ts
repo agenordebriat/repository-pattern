@@ -52,10 +52,7 @@ export default class RepositoriesFactory {
       }`,
       () => this.$fetch(request, { ..._fetchOptions }),
       defu(
-        {
-          watch:
-            watch === false ? [] : [_fetchOptions, ...(watch || [])],
-        },
+        { watch: watch === false ? [] : [_fetchOptions, ...(watch || [])] },
         asyncDataOptions,
       ),
     )
