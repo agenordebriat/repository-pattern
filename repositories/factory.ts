@@ -72,7 +72,7 @@ export default class RepositoriesFactory {
     if (asyncDataOptions?.immediate === false) pending.value = false
 
     return {
-      data: schema ? parseData(data, schema) : data,
+      data: (schema ? parseData(data, schema) : data) as Ref<T["_output"]>,
       pending,
       ...rest,
       error,
