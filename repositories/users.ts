@@ -1,20 +1,16 @@
 import { defu } from "defu"
 import type { z } from "zod"
 import RepositoriesFactory from "~/repositories/factory"
-import users from "~/schemas/users"
+import schemas from "~/schemas/users"
 import type { Options } from "~/repositories/factory"
 
-const { all, names } = users
-
 export default class UsersRepository extends RepositoriesFactory {
-  all = (options?: Options) => this.fetch("/users", options, all)
+  all = (options?: Options) => this.fetch("/users", options, schemas.all)
   names = (options?: Options) => {
-    const defaults: Options<z.infer<typeof all>, string[]> = {
-      asyncDataOptions: {
-        transform: users => users.map(user => user.id),
-      },
+    const defaults: Options<z.infer<typeof schemas.all>, string[]> = {
+      asyncDataOptions: { transform: users => users.map(user => user.id) },
     }
 
-    return this.fetch("/users", defu(defaults, options), names)
+    return this.fetch("/users", defu(defaults, options), schemas.names)
   }
 }
