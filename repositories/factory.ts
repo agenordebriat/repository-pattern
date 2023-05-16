@@ -1,14 +1,10 @@
 import { defu } from "defu"
 import { hash } from "ohash"
+import type { UseFetchOptions } from "nuxt/app"
 import type { ZodSchema } from "zod"
-import type { AsyncDataOptions } from "nuxt/app"
-import type { MultiWatchSources } from "nuxt/dist/app/composables/asyncData"
 
 export interface Options<T = any, U = T> {
-  fetchOptions?: Parameters<typeof $fetch>[1]
-  asyncDataOptions?: Omit<AsyncDataOptions<T, U>, "watch"> & {
-    watch?: MultiWatchSources | false
-  }
+  options?: UseFetchOptions<T, U>
   errorOptions?: {
     statusCode?: number
     statusMessage?: string
@@ -18,16 +14,16 @@ export interface Options<T = any, U = T> {
 }
 
 export default class RepositoriesFactory {
-  private $fetch: typeof $fetch
+  private defaultOptions: Parameters<typeof useFetch>[1]
 
-  constructor(fetchInstance: typeof $fetch = $fetch) {
-    this.$fetch = fetchInstance
+  constructor(options: Parameters<typeof useFetch>[1]) {
+    this.defaultOptions = options
   }
 
-  async fetch<T extends ZodSchema>(
-    request: Parameters<typeof $fetch>[0],
-    { fetchOptions, asyncDataOptions = {}, errorOptions = {} }: Options = {},
-    schema: T | false,
+  async fetch<S extends ZodSchema>(
+    request: Parameters<typeof useFetch>[0],
+    { options, errorOptions = {} }: Options = {},
+    schema: S | false,
   ) {
     if (schema && !schema.description) {
       throw createError({
@@ -36,24 +32,16 @@ export default class RepositoriesFactory {
       })
     }
 
-    const _fetchOptions = reactive({ ...fetchOptions })
-    const { watch } = asyncDataOptions
-
-    const { data, pending, error, ...rest } = await useAsyncData(
-      `${
-        schema
-          ? schema.description
-          : `${request} (${hash([
-              request,
-              fetchOptions,
-              asyncDataOptions,
-              errorOptions,
-            ])})`
-      }`,
-      () => this.$fetch(request, { ..._fetchOptions }),
+    const { data, pending, error, ...rest } = await useFetch(
+      request,
       defu(
-        { watch: watch === false ? [] : [_fetchOptions, ...(watch || [])] },
-        asyncDataOptions,
+        {
+          key: `${`${request} (${
+            schema ? schema.description : hash([request, options, errorOptions])
+          })`}`,
+          ...options,
+        },
+        this.defaultOptions,
       ),
     )
 
@@ -69,10 +57,10 @@ export default class RepositoriesFactory {
       })
     }
 
-    if (asyncDataOptions?.immediate === false) pending.value = false
+    if (options?.immediate === false) pending.value = false
 
     return {
-      data: (schema ? parseData(data, schema) : data) as Ref<T["_output"]>,
+      data: (schema ? parseData(data, schema) : data) as Ref<S["_output"]>,
       pending,
       ...rest,
       error,

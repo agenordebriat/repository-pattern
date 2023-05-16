@@ -8,4 +8,5 @@ export default defineNuxtConfig({
       MOCKAPI_BASE_URL: "",
     },
   },
+  modules: ["@vueuse/nuxt"],
 })

@@ -1,8 +1,7 @@
 import { z } from "zod"
 
-export default {
-  all: z
-    .array(z.object({ id: z.string(), name: z.string(), city: z.string() }))
-    .describe("Users"),
-  names: z.array(z.string()).describe("User names"),
-}
+export const users = z
+  .array(z.object({ id: z.string(), name: z.string(), city: z.string() }))
+  .describe("Users")
+
+export const userNames = z.array(z.string()).describe("User names")

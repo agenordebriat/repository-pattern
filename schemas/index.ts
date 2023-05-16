@@ -1,8 +1,7 @@
-import users from "~/schemas/users"
+import { post } from "~/schemas/posts"
+import { userNames, users } from "~/schemas/users"
 
 export default {
-  users: {
-    all: users.all,
-    names: users.names,
-  },
+  posts: { post },
+  users: { users, userNames },
 }

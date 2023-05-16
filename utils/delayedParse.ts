@@ -1,9 +1,13 @@
+import type { ZodSchema } from "zod"
 import schemas from "~/schemas"
 
-type DelayedParseFunction = (
+type DelayedParseFunction = <
+  R extends keyof typeof schemas,
+  S extends keyof (typeof schemas)[R],
+>(
   data: Ref<unknown>,
-  repository: keyof typeof schemas,
-  schema: keyof (typeof schemas)[keyof typeof schemas],
+  repository: R,
+  schema: S,
   pending: Ref<boolean>,
 ) => void
 
@@ -14,7 +18,12 @@ export const delayedParse: DelayedParseFunction = (
   pending,
 ) => {
   watch(pending, () => {
-    if (!pending.value)
-      data.value = parseData(data, schemas[repository][schema]).value
+    if (!pending.value) {
+      const parsedData = parseData(
+        data,
+        schemas[repository][schema] as ZodSchema,
+      )
+      data.value = parsedData.value
+    }
   })
 }
