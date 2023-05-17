@@ -13,9 +13,6 @@ const incrementCount = () => count.value++
 const { data: countFromApi } = await useRepository("posts").updatePost(count) // Set "watch" option to "false" to disable automatic updates on count change
 
 // UsersRepository
-// Users
-const { data: users } = await useRepository("users").users()
-
 // User names
 const {
   data: userNames,
@@ -26,6 +23,9 @@ const {
 })
 
 delayedParse(userNames, "users", "userNames", pending) // Set "watch" option to "false" to disable automatic updates on userNames change
+
+// Users
+const { data: users } = await useRepository("users").users()
 
 // Rainbow mode
 const degrees = ref(0)
@@ -68,14 +68,14 @@ const { pause, resume, isActive } = useIntervalFn(
     </li>
     <li>
       <h2>UsersRepository</h2>
-      <h3>Users</h3>
-      <pre>{{ users }}</pre>
       <h3>User names</h3>
       <button @click="execute()">
         Fetch user names
       </button>
       <pre>pending: {{ pending }}</pre>
       <pre v-if="userNames">{{ userNames }}</pre>
+      <h3>Users</h3>
+      <pre>{{ users }}</pre>
     </li>
   </ul>
 </template>

@@ -3,5 +3,5 @@ import { userNames, users } from "~/schemas/users"
 
 export default {
   posts: { post },
-  users: { users, userNames },
+  users: { userNames, users },
 }

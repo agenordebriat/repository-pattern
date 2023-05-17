@@ -11,17 +11,13 @@ type UseRepositoryFunction = <R extends keyof Repositories>(
 ) => Repositories[R]
 
 export const useRepository: UseRepositoryFunction = (repository) => {
-  const jsonplaceholderOptions = {
-    baseURL: useRuntimeConfig().public.JSONPLACEHOLDER_BASE_URL,
-  }
-
-  const mockapiOptions = {
-    baseURL: useRuntimeConfig().public.MOCKAPI_BASE_URL,
-  }
-
   const repositories: Repositories = {
-    posts: new PostsRepository(jsonplaceholderOptions),
-    users: new UsersRepository(mockapiOptions),
+    posts: new PostsRepository({
+      baseURL: useRuntimeConfig().public.JSONPLACEHOLDER_BASE_URL,
+    }),
+    users: new UsersRepository({
+      baseURL: useRuntimeConfig().public.MOCKAPI_BASE_URL,
+    }),
   }
 
   return repositories[repository]
