@@ -1,7 +1,7 @@
 import type { ZodSchema } from "zod"
 import schemas from "~/schemas"
 
-type DelayedParseFunction = <
+type DelayedParseFn = <
   R extends keyof typeof schemas,
   S extends keyof (typeof schemas)[R],
 >(
@@ -11,7 +11,7 @@ type DelayedParseFunction = <
   pending: Ref<boolean>,
 ) => void
 
-export const delayedParse: DelayedParseFunction = (
+export const delayedParse: DelayedParseFn = (
   data,
   repository,
   schema,

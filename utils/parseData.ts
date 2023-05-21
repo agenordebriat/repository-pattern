@@ -1,11 +1,11 @@
 import type { ZodSchema, z } from "zod"
 
-type ParseDataFunction = <S extends ZodSchema>(
+type ParseDataFn = <S extends ZodSchema>(
   data: Ref<unknown>,
   schema: S,
 ) => Ref<z.infer<S> | null>
 
-export const parseData: ParseDataFunction = (data, schema) => {
+export const parseData: ParseDataFn = (data, schema) => {
   if (!data.value) return data
 
   const result = schema.safeParse(data.value)

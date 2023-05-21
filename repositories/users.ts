@@ -5,7 +5,7 @@ import { userNames, users } from "~/schemas/users"
 import type { Options } from "~/repositories/factory"
 
 export default class UsersRepository extends RepositoriesFactory {
-  userNames = (options?: Options) => {
+  getUserNames = (options?: Options) => {
     const defaults: Options<
       z.infer<typeof users>,
       z.infer<typeof userNames>
@@ -13,8 +13,14 @@ export default class UsersRepository extends RepositoriesFactory {
       options: { transform: users => users.map(user => user.name) },
     }
 
-    return this.fetch("/users", defu(options, defaults), userNames)
+    return this.fetch(
+      "/users",
+      defu(options, defaults),
+      userNames,
+      "Get user names",
+    )
   }
 
-  users = (options?: Options) => this.fetch("/users", options, users)
+  getUsers = (options?: Options) =>
+    this.fetch("/users", options, users, "Get users")
 }

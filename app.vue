@@ -4,7 +4,7 @@
 const postId = ref(1)
 const incrementPostId = () => postId.value++
 
-const { data: posts } = await useRepository("posts").postById(postId)
+const { data: posts } = await useRepository("posts").getPostById(postId)
 
 // Update post
 const count = ref(0)
@@ -18,14 +18,14 @@ const {
   data: userNames,
   execute,
   pending,
-} = await useRepository("users").userNames({
+} = await useRepository("users").getUserNames({
   options: { immediate: false },
 })
 
 delayedParse(userNames, "users", "userNames", pending) // Set "watch" option to "false" to disable automatic updates on userNames change
 
 // Users
-const { data: users } = await useRepository("users").users()
+const { data: users } = await useRepository("users").getUsers()
 
 // Rainbow mode
 const degrees = ref(0)

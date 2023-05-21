@@ -24,21 +24,13 @@ export default class RepositoriesFactory {
     request: Parameters<typeof useFetch>[0],
     { options, errorOptions = {} }: Options = {},
     schema: S | false,
+    description: string,
   ) {
-    if (schema && !schema.description) {
-      throw createError({
-        statusMessage: "Schema description is required",
-        fatal: true,
-      })
-    }
-
     const { data, pending, error, ...rest } = await useFetch(
       request,
       defu(
         {
-          key: `${`${request} (${
-            schema ? schema.description : hash([request, options, errorOptions])
-          })`}`,
+          key: `${`${description} (${hash([options, errorOptions])})`}`,
           ...options,
         },
         this.defaultOptions,
