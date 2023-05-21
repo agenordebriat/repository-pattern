@@ -13,7 +13,7 @@ export default class UsersRepository extends RepositoriesFactory {
       options: { transform: users => users.map(user => user.name) },
     }
 
-    return this.fetch("/users", defu(defaults, options), userNames)
+    return this.fetch("/users", defu(options, defaults), userNames)
   }
 
   users = (options?: Options) => this.fetch("/users", options, users)

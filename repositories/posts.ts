@@ -10,6 +10,6 @@ export default class PostsRepository extends RepositoriesFactory {
   updatePost = (count: Ref<number>, options?: Options) => {
     const defaults: Options = { options: { method: "PUT", body: { count } } }
 
-    return this.fetch("/posts/1", defu(defaults, options), false)
+    return this.fetch("/posts/1", defu(options, defaults), false)
   }
 }
