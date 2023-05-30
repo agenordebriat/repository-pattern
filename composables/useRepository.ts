@@ -8,7 +8,7 @@ interface Repositories {
 
 type UseRepositoryFn = <R extends keyof Repositories>(
   repository: R,
-) => Repositories[R]
+) => Omit<Repositories[R], "fetch">
 
 export const useRepository: UseRepositoryFn = (repository) => {
   const repositories: Repositories = {
