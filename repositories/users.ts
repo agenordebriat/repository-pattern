@@ -15,12 +15,12 @@ export default class UsersRepository extends RepositoriesFactory {
 
     return this.fetch(
       "/users",
-      defu(options, defaults),
       userNames,
       "Get user names",
+      defu(options, defaults),
     )
   }
 
   getUsers = (options?: Options) =>
-    this.fetch("/users", options, users, "Get users")
+    this.fetch("/users", users, "Get users", options)
 }

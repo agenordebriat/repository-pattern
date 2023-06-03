@@ -22,15 +22,19 @@ export default class RepositoriesFactory {
 
   async fetch<S extends ZodSchema>(
     request: Parameters<typeof useFetch>[0],
-    { options, errorOptions = {} }: Options = {},
     schema: S | false,
     description: string,
+    { options = {}, errorOptions = {} }: Options = {},
   ) {
     const { data, pending, error, ...rest } = await useFetch(
       request,
       defu(
         {
-          key: `${`${description} (${hash([options, errorOptions, Date()])})`}`,
+          key: `${`${description} (${hash([
+            request,
+            options,
+            errorOptions,
+          ])})`}`,
           ...options,
         },
         this.defaultOptions,
@@ -49,7 +53,7 @@ export default class RepositoriesFactory {
       })
     }
 
-    if (options?.immediate === false) pending.value = false
+    if (options.immediate === false) pending.value = false
 
     return {
       data: (schema ? parseData(data, schema) : data) as Ref<S["_output"]>,
