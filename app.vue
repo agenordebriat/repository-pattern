@@ -27,7 +27,7 @@ delayedParse(userNames, "users", "userNames", pending) // Set "watch" option to 
 // Users
 const { data: users } = await useRepository("users").getUsers()
 
-// Rainbow mode
+// 🦄
 const degrees = ref(0)
 
 const { pause, resume, isActive } = useIntervalFn(

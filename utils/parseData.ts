@@ -1,14 +1,14 @@
 import type { ZodSchema, z } from "zod"
 
 type ParseDataFn = <S extends ZodSchema>(
-  data: Ref<unknown>,
+  data: unknown | Ref<unknown>,
   schema: S,
 ) => Ref<z.infer<S> | null>
 
 export const parseData: ParseDataFn = (data, schema) => {
-  if (!data.value) return data
+  if (!unref(data)) return data
 
-  const result = schema.safeParse(data.value)
+  const result = schema.safeParse(unref(data))
 
   if (!result.success) {
     throw createError({
@@ -19,5 +19,9 @@ export const parseData: ParseDataFn = (data, schema) => {
     })
   }
 
-  return ref(result.data)
+  if (!isRef(data)) return result.data
+
+  data.value = result.data
+
+  return ref(data)
 }

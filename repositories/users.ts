@@ -21,6 +21,5 @@ export default class UsersRepository extends RepositoriesFactory {
     )
   }
 
-  getUsers = (options?: Options) =>
-    this.fetch("/users", users, "Get users", options)
+  getUsers = () => this.fetch("/users", users, "Get users")
 }

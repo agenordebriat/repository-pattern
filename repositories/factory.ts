@@ -30,11 +30,7 @@ export default class RepositoriesFactory {
       request,
       defu(
         {
-          key: `${`${description} (${hash([
-            request,
-            options,
-            errorOptions,
-          ])})`}`,
+          key: `${description} (${hash([request, options, errorOptions])})`,
           ...options,
         },
         this.defaultOptions,
