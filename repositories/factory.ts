@@ -41,12 +41,19 @@ export default class RepositoriesFactory {
       const { statusCode, statusMessage, message, fatal } = errorOptions
       const errorData: typeof errorOptions = error.value
 
-      throw createError({
-        statusCode: statusCode ?? errorData.statusCode,
-        statusMessage: statusMessage ?? errorData.statusMessage,
-        message: message ?? errorData.message,
-        fatal: fatal ?? true,
-      })
+      const createdError = () => {
+        return createError({
+          statusCode: statusCode ?? errorData.statusCode,
+          statusMessage: statusMessage ?? errorData.statusMessage,
+          message: message ?? errorData.message,
+          fatal: fatal ?? true,
+        })
+      }
+
+      if (fatal)
+        throw createdError()
+
+      createdError()
     }
 
     if (options.immediate === false) pending.value = false
