@@ -1,9 +1,9 @@
 import RepositoriesFactory from "~/repositories/factory"
-import { post } from "~/schemas/posts"
+import { Post } from "~/schemas/posts"
 
 export default class PostsRepository extends RepositoriesFactory {
   getPostById = (id: number | Ref<number>) =>
-    this.fetch(() => `/posts/${unref(id)}`, post, "Get post by ID")
+    this.fetch(() => `/posts/${unref(id)}`, Post, "Get post by ID")
 
   updatePost = (count: Ref<number>) =>
     this.fetch("/posts/1", false, "Update post", {

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { UserNames } from "./schemas/users"
+
 // PostsRepository
 // Post by ID
 const postId = ref(1)
@@ -22,7 +24,7 @@ const {
   options: { immediate: false },
 })
 
-delayedParse(userNames, "users", "userNames", pending) // Set "watch" option to "false" to disable automatic updates on userNames change
+delayedParse(userNames, UserNames, pending) // Set "watch" option to "false" to disable automatic updates on userNames change
 
 // Users
 const { data: users } = await useRepository("users").getUsers()

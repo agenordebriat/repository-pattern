@@ -1,7 +1,7 @@
 import { z } from "zod"
 
-export const userNames = z.array(z.string())
+export const UserNames = z.array(z.string())
 
-export const users = z.array(
+export const Users = z.array(
   z.object({ id: z.string(), name: z.string(), city: z.string() }),
 )
