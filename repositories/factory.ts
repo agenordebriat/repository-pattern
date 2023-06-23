@@ -26,7 +26,7 @@ export default class RepositoriesFactory {
     description: string,
     { options = {}, errorOptions = {} }: Options = {},
   ) {
-    const { data, pending, error, ...rest } = await useFetch(
+    const { data, error, ...rest } = await useFetch(
       request,
       defu(
         {
@@ -56,13 +56,10 @@ export default class RepositoriesFactory {
       createdError()
     }
 
-    if (options.immediate === false) pending.value = false
-
     return {
       data: (schema ? parseData(data, schema) : data) as Ref<S["_output"]>,
-      pending,
-      ...rest,
       error,
+      ...rest,
     }
   }
 }
